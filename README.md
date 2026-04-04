@@ -2,6 +2,8 @@
 
 A high-performance, modern HRMS built with **Next.js 15**, **Supabase**, and **Lucide React**. This platform provides a comprehensive suite for global workforce management, recruitment, payroll, and professional development.
 
+### 🌐 [Live Demo](https://hrms-shri.vercel.app/)
+
 ---
 
 ## ✨ Key Features
