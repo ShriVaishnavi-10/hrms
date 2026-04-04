@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "ZEN-HRMS-API-COLLECTION",
+		"name": "Zen HRMS API Collection",
+		"description": "Standardized API testing for Zen HRMS. Note: Most functionality uses Next.js Server Actions, but database endpoints can be tested via Supabase PostgREST.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth & Profiles",
+			"item": [
+				{
+					"name": "Get Global Profiles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "apikey",
+								"value": "{{SUPABASE_ANON_KEY}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{SUPABASE_URL}}/rest/v1/profiles?select=*",
+							"host": [
+								"{{SUPABASE_URL}}"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"profiles"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "*"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payroll & Finance",
+			"item": [
+				{
+					"name": "Get Salary Structures",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "apikey",
+								"value": "{{SUPABASE_ANON_KEY}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{USER_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{SUPABASE_URL}}/rest/v1/salary_structures?select=*",
+							"host": [
+								"{{SUPABASE_URL}}"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"salary_structures"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "*"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Recruitment & Talent",
+			"item": [
+				{
+					"name": "List Public Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "apikey",
+								"value": "{{SUPABASE_ANON_KEY}}"
+							}
+						],
+						"url": {
+							"raw": "{{SUPABASE_URL}}/rest/v1/jobs?select=*&status=eq.open",
+							"host": [
+								"{{SUPABASE_URL}}"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "*"
+								},
+								{
+									"key": "status",
+									"value": "eq.open"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "SUPABASE_URL",
+			"value": "https://your-project.supabase.co"
+		},
+		{
+			"key": "SUPABASE_ANON_KEY",
+			"value": "your_anon_key"
+		},
+		{
+			"key": "USER_TOKEN",
+			"value": "your_jwt_token"
+		}
+	]
+}
