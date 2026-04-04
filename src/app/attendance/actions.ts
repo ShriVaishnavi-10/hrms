@@ -50,17 +50,27 @@ export async function clockIn(locationData: string) {
 
 /**
  * Clocks out the current user.
- * Logic: Mark as 'early_out' if before 7:00 PM.
+ * Verified: Ensures the calling user owns the attendance record.
  */
 export async function clockOut(attendanceId: string) {
   const supabase = await createClient()
-  
-  const now = new Date()
-  const sevenPM = new Date()
-  sevenPM.setHours(19, 0, 0, 0)
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // We could update the status here if we wanted to combine Late + Early Out,
-  // but for now let's just record the time.
+  if (!user) return { error: 'Unauthorized' }
+
+  const now = new Date()
+
+  // Verify ownership before updating (Security + Logic)
+  const { data: record, error: fetchError } = await supabase
+    .from('attendance')
+    .select('user_id')
+    .eq('id', attendanceId)
+    .single()
+
+  if (fetchError || record.user_id !== user.id) {
+    return { error: 'Unauthorized: Attendance record not found or inaccessible.' }
+  }
+
   const { error } = await supabase
     .from('attendance')
     .update({ 

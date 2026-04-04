@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { clockIn, clockOut } from '@/app/attendance/actions'
 import { Clock, MapPin, Play, Square, Timer, AlertCircle } from 'lucide-react'
 
@@ -13,6 +14,7 @@ type AttendanceRecord = {
 }
 
 export default function ClockWidget({ initialAttendance }: { initialAttendance: AttendanceRecord | null }) {
+  const router = useRouter()
   const [attendance, setAttendance] = useState<AttendanceRecord | null>(initialAttendance)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [mounted, setMounted] = useState(false)
@@ -46,7 +48,7 @@ export default function ClockWidget({ initialAttendance }: { initialAttendance: 
     setError(null)
     const res = await clockIn(location || 'Unknown')
     if (res.success) {
-      window.location.reload() // Simple revalidation
+      router.refresh()
     } else {
       setError(res.error || 'Failed to clock in')
     }
@@ -59,7 +61,7 @@ export default function ClockWidget({ initialAttendance }: { initialAttendance: 
     setError(null)
     const res = await clockOut(attendance.id)
     if (res.success) {
-      window.location.reload()
+      router.refresh()
     } else {
       setError(res.error || 'Failed to clock out')
     }
