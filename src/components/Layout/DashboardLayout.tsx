@@ -49,8 +49,8 @@ export default async function DashboardLayout({
       <nav className="h-16 border-b border-border bg-card/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-primary-foreground shadow-md">
-              H
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shadow-md">
+              <img src="/logo.png" alt="Zen HRMS Logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-lg tracking-tight text-foreground">HRMS</span>
           </Link>
