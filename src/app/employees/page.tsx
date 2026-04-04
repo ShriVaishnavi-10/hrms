@@ -6,21 +6,30 @@ import EmployeeDirectory from '@/components/Employees/EmployeeDirectory'
 import DashboardLayout from '@/components/Layout/DashboardLayout'
 
 export default async function EmployeesPage() {
-  const supabase = await createClient()
-  const currentProfile = await getProfile()
+  // Parallel data fetching - eliminates sequential waterfalls
+  const [currentProfile, { data: employees, error }] = await Promise.all([
+    getProfile(),
+    (async () => {
+      const supabase = await createClient()
+      let query = supabase.from('profiles').select('*')
+      
+      // Need the profile first for role check, so we still need some sequence, 
+      // but we can optimize by fetching the current user and the directory in parallel 
+      // if we assume a standard query then filter locally, or just stick to parallelized top-level calls.
+      // Actually, since the query depends on currentProfile.role, we can't fully parallelize the query building.
+      // BUT we can parallelize getProfile() with any other independent layout-level data.
+      return await supabase.from('profiles').select('*').order('full_name', { ascending: true })
+    })()
+  ])
 
   if (!currentProfile) {
     return redirect('/login')
   }
 
-  // Fetch all profiles for the directory
-  let query = supabase.from('profiles').select('*')
-  
-  if (currentProfile.role !== 'super_admin' && currentProfile.role !== 'hr_manager') {
-    query = query.eq('is_public', true)
-  }
-
-  const { data: employees, error } = await query.order('full_name', { ascending: true })
+  // Filter based on role (now happening after parallel fetch for speed)
+  const filteredEmployees = currentProfile.role === 'super_admin' || currentProfile.role === 'hr_manager'
+    ? employees
+    : employees?.filter(e => e.is_public)
 
   if (error) {
     console.error('Error fetching employees:', error)
@@ -52,7 +61,7 @@ export default async function EmployeesPage() {
         </div>
 
         {/* Interactive Directory Component */}
-        <EmployeeDirectory employees={employees || []} />
+        <EmployeeDirectory employees={filteredEmployees || []} />
       </div>
     </DashboardLayout>
   )

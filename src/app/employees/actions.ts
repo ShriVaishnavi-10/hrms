@@ -3,11 +3,13 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { getProfile } from '@/utils/supabase/profiles'
+import { cache } from 'react'
 
 /**
  * Fetches a full employee profile with its reporting manager and department details.
+ * Optimized with React cache for request-level memoization.
  */
-export async function getEmployeeFullProfile(id: string) {
+export const getEmployeeFullProfile = cache(async function getEmployeeFullProfile(id: string) {
   const supabase = await createClient()
   
   const { data, error } = await supabase
@@ -25,7 +27,7 @@ export async function getEmployeeFullProfile(id: string) {
   }
 
   return data
-}
+})
 
 /**
  * Updates an employee profile's personal and professional details.
@@ -58,8 +60,9 @@ export async function updateEmployeeProfile(id: string, updates: any) {
 
 /**
  * Fetches all profiles for simplified selection (e.g. Manager identification).
+ * Optimized with React cache.
  */
-export async function getAllEmployees() {
+export const getAllEmployees = cache(async function getAllEmployees() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('profiles')
@@ -68,12 +71,13 @@ export async function getAllEmployees() {
 
   if (error) return []
   return data
-}
+})
 
 /**
  * Fetches all departments for selection dropdowns.
+ * Optimized with React cache.
  */
-export async function getDepartments() {
+export const getDepartments = cache(async function getDepartments() {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('departments')
@@ -85,7 +89,7 @@ export async function getDepartments() {
 
   if (error) return []
   return data
-}
+})
 
 /**
  * Management: Create a new organizational department.

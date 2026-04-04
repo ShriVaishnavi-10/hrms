@@ -15,13 +15,18 @@ import {
 } from 'lucide-react'
 import ProfileDetails from '@/components/Profile/ProfileDetails'
 import DashboardLayout from '@/components/Layout/DashboardLayout'
+import Image from 'next/image'
 
 export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const employee = await getEmployeeFullProfile(id)
-  const caller = await getProfile()
-  const allEmployees = await getAllEmployees()
-  const allDepartments = await getDepartments()
+  
+  // Parallel data fetching - avoids sequential waterfall waits
+  const [employee, caller, allEmployees, allDepartments] = await Promise.all([
+    getEmployeeFullProfile(id),
+    getProfile(),
+    getAllEmployees(),
+    getDepartments()
+  ])
 
   if (!employee) {
     return notFound()
@@ -53,9 +58,15 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
            <div className="relative flex flex-col lg:flex-row items-center lg:items-end gap-10">
               {/* Profile Picture */}
               <div className="relative">
-                 <div className="w-40 h-40 rounded-[2.5rem] bg-muted flex items-center justify-center border-4 border-card shadow-2xl overflow-hidden">
+                 <div className="w-40 h-40 rounded-[2.5rem] bg-muted flex items-center justify-center border-4 border-card shadow-2xl overflow-hidden relative">
                     {employee.avatar_url ? (
-                      <img src={employee.avatar_url} alt={employee.full_name} className="w-full h-full object-cover" />
+                      <Image 
+                        src={employee.avatar_url} 
+                        alt={employee.full_name} 
+                        fill 
+                        className="object-cover"
+                        priority
+                      />
                     ) : (
                       <span className="text-5xl font-black text-primary/30 uppercase tracking-tighter">
                          {employee.full_name?.split(' ').map((n: string) => n[0]).join('')}

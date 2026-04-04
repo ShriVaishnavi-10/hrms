@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { 
   Users, 
   ChevronDown, 
@@ -38,9 +39,14 @@ export default function SimpleOrgChart({
               <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-0.5 h-10 bg-primary/20 group-hover:bg-primary transition-all"></div>
               
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center font-black text-primary overflow-hidden border border-border/50">
+                <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center font-black text-primary overflow-hidden border border-border/50 relative">
                    {manager.avatar_url ? (
-                     <img src={manager.avatar_url} alt={manager.full_name} className="w-full h-full object-cover" />
+                     <Image 
+                       src={manager.avatar_url} 
+                       alt={manager.full_name} 
+                       fill 
+                       className="object-cover"
+                     />
                    ) : (
                      manager.full_name?.split(' ').map(n => n[0]).join('')
                    )}
@@ -61,9 +67,14 @@ export default function SimpleOrgChart({
         {/* Current Employee Node */}
         <div className="w-full max-w-[320px] bg-primary text-primary-foreground rounded-3xl p-6 shadow-2xl shadow-primary/20 relative group scale-110">
            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-[2rem] bg-white flex items-center justify-center font-black text-primary text-xl shadow-lg border-2 border-primary/20 overflow-hidden">
+              <div className="w-16 h-16 rounded-[2rem] bg-white flex items-center justify-center font-black text-primary text-xl shadow-lg border-2 border-primary/20 overflow-hidden relative">
                  {employee.avatar_url ? (
-                    <img src={employee.avatar_url} alt={employee.full_name} className="w-full h-full object-cover" />
+                    <Image 
+                      src={employee.avatar_url} 
+                      alt={employee.full_name} 
+                      fill 
+                      className="object-cover"
+                    />
                  ) : (
                     employee.full_name?.split(' ').map(n => n[0]).join('')
                  )}

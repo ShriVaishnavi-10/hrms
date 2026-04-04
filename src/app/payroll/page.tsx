@@ -9,18 +9,23 @@ import PayslipCard from '@/components/Payroll/PayslipCard'
 import DashboardLayout from '@/components/Layout/DashboardLayout'
 
 export default async function PayrollPage() {
-  const profile = await getProfile()
+  // Optimized: Parallel data fetching for payroll dashboard
+  const [profile, myPayroll] = await Promise.all([
+    getProfile(),
+    getMyPayroll()
+  ])
+
   const isAdmin = profile?.role === 'super_admin' || profile?.role === 'hr_manager'
   
-  const myPayroll = await getMyPayroll()
-  const myStructure = await getSalaryStructure(profile?.id || '')
-  const allEmployees = isAdmin ? await getAllEmployees() : []
-  
-  // For the summary, we need employees with their structures
-  const supabase = await createClient()
-  const { data: employeesWithStructures } = isAdmin 
-    ? await supabase.from('profiles').select('*, salary_structures(*)').not('salary_structures', 'is', null)
-    : { data: [] }
+  const [myStructure, allEmployees, { data: employeesWithStructures }] = await Promise.all([
+    getSalaryStructure(profile?.id || ''),
+    isAdmin ? getAllEmployees() : Promise.resolve([]),
+    (async () => {
+      if (!isAdmin) return { data: [] }
+      const supabase = await createClient()
+      return await supabase.from('profiles').select('*, salary_structures(*)').not('salary_structures', 'is', null)
+    })()
+  ])
 
   return (
     <DashboardLayout activePage="payroll">
