@@ -21,7 +21,7 @@ export async function clockIn(locationData: string) {
     .select('*')
     .eq('user_id', user.id)
     .gte('clock_in', `${today}T00:00:00`)
-    .single()
+    .maybeSingle()
 
   if (existing) return { error: 'Already clocked in for today.' }
 
@@ -45,6 +45,7 @@ export async function clockIn(locationData: string) {
   if (error) return { error: error.message }
 
   revalidatePath('/')
+  revalidatePath('/attendance')
   return { success: true }
 }
 
@@ -81,6 +82,7 @@ export async function clockOut(attendanceId: string) {
   if (error) return { error: error.message }
 
   revalidatePath('/')
+  revalidatePath('/attendance')
   return { success: true }
 }
 
@@ -123,13 +125,13 @@ export async function requestManualEntry(data: { clockIn: string, clockOut: stri
       clock_in: data.clockIn,
       clock_out: data.clockOut,
       status: 'pending_approval',
-      location: `Manual: ${data.reason}`,
       is_manual: true
     })
 
   if (error) return { error: error.message }
 
   revalidatePath('/')
+  revalidatePath('/attendance')
   return { success: true }
 }
 
@@ -179,6 +181,7 @@ export async function resolveAttendanceRequest(id: string, newStatus: 'on_time' 
   if (error) return { error: error.message }
 
   revalidatePath('/')
+  revalidatePath('/attendance')
   return { success: true }
 }
 

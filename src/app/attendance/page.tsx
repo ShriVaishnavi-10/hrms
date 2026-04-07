@@ -5,6 +5,8 @@ import AttendanceReports from '@/components/Attendance/AttendanceReports'
 import AttendanceHistory from '@/components/Attendance/AttendanceHistory'
 import { Clock, BarChart3, History } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AttendancePage() {
   const profile = await getProfile()
   const role = profile?.role || 'employee'

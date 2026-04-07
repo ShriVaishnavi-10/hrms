@@ -1,6 +1,7 @@
 import { login } from './actions'
-import { LogIn, UserPlus, ShieldCheck, Mail, Lock } from 'lucide-react'
+import { LogIn, UserPlus, Mail, Lock } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function LoginPage({
   searchParams,
@@ -17,8 +18,14 @@ export default async function LoginPage({
 
       <div className="w-full max-w-md p-8 relative z-10">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl border border-primary/20 mb-4 shadow-sm">
-            <ShieldCheck className="w-10 h-10 text-primary" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/5 rounded-3xl border border-primary/10 mb-4 shadow-sm relative overflow-hidden">
+            <Image 
+              src="/logo.png" 
+              alt="Zen HRMS Logo" 
+              fill
+              className="object-contain p-3"
+              priority
+            />
           </div>
           <h1 className="text-3xl font-bold text-foreground tracking-tight">HRMS Portal</h1>
           <p className="text-muted font-medium mt-2">Sign in to manage your organization</p>
